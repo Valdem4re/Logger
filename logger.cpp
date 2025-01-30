@@ -1,5 +1,9 @@
 #include "logger.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 void Logger::info(const char* format, ...) {
     setOutputColor(LogLevel::INFO);
     std::cout << "INFO: ";
@@ -53,6 +57,8 @@ void Logger::debug(const char* format,...) {
 };
 
 void Logger::setOutputColor(const LogLevel& lvl) {
+    #ifndef _WIN32 
+    // Linux console color settigs
     switch (lvl)
     {
         case LogLevel::INFO:    std::cout << "\033[1;32m"; // Green
@@ -67,6 +73,33 @@ void Logger::setOutputColor(const LogLevel& lvl) {
         default:
             break;
     }
+    #else
+    // Windows console color settings
+    switch (lvl)
+    {
+        case LogLevel::INFO:    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
+            break;
+        case LogLevel::WARN:    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_YELLOW);
+            break;
+        case LogLevel::ERROR:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED);
+            break;
+        case LogLevel::DEBUG:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE);
+            break;
+
+        default:
+            break;
+    }
+    #endif
 }
 
-void Logger::resetOutputColor() { std::cout << "\033[0m";}
+void Logger::resetOutputColor() { 
+    #ifndef _WIN32
+    std::cout << "\033[0m";
+    #else
+    SetConsoleTextAttribute(
+        GetStdHandle(STD_OUTPUT_HANDLE),
+         FOREGROUND_RED   |
+         FOREGROUND_GREEN |
+         FOREGROUND_BLUE);
+    #endif
+}
