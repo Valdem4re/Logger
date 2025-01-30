@@ -4,56 +4,62 @@
 #include <windows.h>
 #endif
 
+std::ostream* Logger::log_output_stream_ = &std::cout; // default
+
+ void Logger::setLoggingOutput(std::ostream& output) {
+    log_output_stream_ = &output;
+ }
+
 void Logger::info(const char* format, ...) {
     setOutputColor(LogLevel::INFO);
-    std::cout << "INFO: ";
+    *log_output_stream_ << "[INFO] ";
     resetOutputColor();
 
     va_list args;
     va_start(args, format);
     std::vprintf(format, args);
     va_end(args);
-    std::cout << std::endl;
-    std::cout.flush();
+    *log_output_stream_  << std::endl;
+    log_output_stream_->flush();
 };
 
 void Logger::warning(const char* format, ...) {
     setOutputColor(LogLevel::WARN);
-    std::cout << "WARNING: ";
+    *log_output_stream_ << "[WARNING] ";
     resetOutputColor();
 
     va_list args;
     va_start(args, format);
     std::vprintf(format, args);
     va_end(args);
-    std::cout << std::endl;
-    std::cout.flush();
+    *log_output_stream_  << std::endl;
+    log_output_stream_->flush();
 };
 
 void Logger::error(const char* format,...) {
     setOutputColor(LogLevel::ERROR);
-    std::cerr << "ERROR: ";
+    *log_output_stream_ << "[ERROR] ";
     resetOutputColor();
 
     va_list args;
     va_start(args, format);
     std::vprintf(format, args);
     va_end(args);
-    std::cerr << std::endl;
-    std::cerr.flush();
+    *log_output_stream_  << std::endl;
+    log_output_stream_->flush();
 };
 
 void Logger::debug(const char* format,...) {
     setOutputColor(LogLevel::DEBUG);
-    std::cout << "DEBUG: ";
+    *log_output_stream_ << "[DEBUG] ";
     resetOutputColor();
 
     va_list args;
     va_start(args, format);
     std::vprintf(format, args);
     va_end(args);
-    std::cout << std::endl;
-    std::cout.flush();
+    *log_output_stream_  << std::endl;
+    log_output_stream_->flush();
 };
 
 void Logger::setOutputColor(const LogLevel& lvl) {
