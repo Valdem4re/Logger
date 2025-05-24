@@ -2,10 +2,14 @@ echo "[Build] building logger..."
 
 BUILD_DIR="build"
 
-rm -rf $BUILD_DIR
-mkdir -p $BUILD_DIR && cd $BUILD_DIR
+if [ -d "$BUILD_DIR" ]; then
+    rm -rf $BUILD_DIR
+fi
+
+mkdir -p $BUILD_DIR
+cd $BUILD_DIR || exit
 
 cmake ../src
-make
+cmake --build . --config Release
 
 echo "[Build] Done."
