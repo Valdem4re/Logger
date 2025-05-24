@@ -22,7 +22,7 @@ class Logger {
 
     private:
 
-    enum LogLevel {INFO, WARN, ERROR, DEBUG};
+    enum LogLevel {LOG_INFO, LOG_WARN, LOG_ERROR, LOG_DEBUG};
 
     static void setOutputColor(const LogLevel& lvl);
     static void resetOutputColor();

@@ -6,12 +6,12 @@
 
 std::ostream* Logger::log_output_stream_ = &std::cout; // default
 
- void Logger::setLoggingOutput(std::ostream& output) {
+void Logger::setLoggingOutput(std::ostream& output) {
     log_output_stream_ = &output;
- }
+}
 
 void Logger::info(const char* format, ...) {
-    setOutputColor(LogLevel::INFO);
+    setOutputColor(LogLevel::LOG_INFO);
     *log_output_stream_ << "[INFO] ";
     resetOutputColor();
 
@@ -24,7 +24,7 @@ void Logger::info(const char* format, ...) {
 };
 
 void Logger::warning(const char* format, ...) {
-    setOutputColor(LogLevel::WARN);
+    setOutputColor(LogLevel::LOG_WARN);
     *log_output_stream_ << "[WARNING] ";
     resetOutputColor();
 
@@ -37,7 +37,7 @@ void Logger::warning(const char* format, ...) {
 };
 
 void Logger::error(const char* format,...) {
-    setOutputColor(LogLevel::ERROR);
+    setOutputColor(LogLevel::LOG_ERROR);
     *log_output_stream_ << "[ERROR] ";
     resetOutputColor();
 
@@ -50,7 +50,7 @@ void Logger::error(const char* format,...) {
 };
 
 void Logger::debug(const char* format,...) {
-    setOutputColor(LogLevel::DEBUG);
+    setOutputColor(LogLevel::LOG_DEBUG);
     *log_output_stream_ << "[DEBUG] ";
     resetOutputColor();
 
@@ -83,13 +83,13 @@ void Logger::setOutputColor(const LogLevel& lvl) {
     // Windows console color settings
     switch (lvl)
     {
-        case LogLevel::INFO:    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
+        case LogLevel::LOG_INFO:    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_INTENSITY);
             break;
-        case LogLevel::WARN:    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_YELLOW);
+        case LogLevel::LOG_WARN:    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
             break;
-        case LogLevel::ERROR:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED);
+        case LogLevel::LOG_ERROR:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_INTENSITY);
             break;
-        case LogLevel::DEBUG:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        case LogLevel::LOG_DEBUG:   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE);
             break;
 
         default:
