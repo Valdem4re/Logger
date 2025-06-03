@@ -49,35 +49,17 @@ void Logger::info(const char* format, Args... args) {
 
 template<class... Args>
 void Logger::warning(const char* format, Args...) {
-    use_prefix(LOG_WARN);
-    va_list args;
-    va_start(args, format);
-    std::vprintf(format, args);
-    va_end(args);
-    *log_output_stream_  << std::endl;
-    log_output_stream_->flush();
+    printLog(LOG_WARN, format, args);
 };
 
 template<class... Args>
 void Logger::error(const char* format, Args...) {
-    use_prefix(LOG_ERROR);
-    va_list args;
-    va_start(args, format);
-    std::vprintf(format, args);
-    va_end(args);
-    *log_output_stream_  << std::endl;
-    log_output_stream_->flush();
+    printLog(LOG_ERROR, format, args);
 };
 
 template<class... Args>
 void Logger::debug(const char* format, Args...) {
-    use_prefix(LOG_DEBUG);
-    va_list args;
-    va_start(args, format);
-    std::vprintf(format, args);
-    va_end(args);
-    *log_output_stream_  << std::endl;
-    log_output_stream_->flush();
+    printLog(LOG_DEBUG, format, args);
 };
 
 void Logger::setOutputColor(const LogType& type) {
