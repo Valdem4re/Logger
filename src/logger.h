@@ -5,27 +5,34 @@
 #include <cstdarg>
 #include <iostream>
 
-
-
 class Logger {
     public:
     enum LogOutput {CONSOLE, FILE, STREAM}; 
-    static void info(const char* format, ...);
 
-    static void warning(const char* format, ...);
+    template<class... Args>
+    static void info(const char* format, Args... args);
 
-    static void error(const char* format, ...);
+    template<class... Args>
+    static void warning(const char* format, Args... args);
 
-    static void debug(const char* format, ...);
+    template<class... Args>
+    static void error(const char* format, Args... args);
+
+    template<class... Args>
+    static void debug(const char* format, Args... args);
 
     static void setLoggingOutput(std::ostream& output);
 
     private:
 
-    enum LogLevel {LOG_INFO, LOG_WARN, LOG_ERROR, LOG_DEBUG};
+    enum LogType {LOG_INFO, LOG_WARN, LOG_ERROR, LOG_DEBUG};
 
-    static void setOutputColor(const LogLevel& lvl);
+    static void setOutputColor(const LogType& type);
     static void resetOutputColor();
+    static void usePrefix(const LogType& type);
+
+    template<class... Args>
+    static void printLog(const LogType type, const char* format, Args... args);
 
     static std::ostream* log_output_stream_;
 
