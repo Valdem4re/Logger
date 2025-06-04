@@ -5,13 +5,11 @@
 #endif
 
 
-#define LOGGER_INFO_PREFIX     "\n[INFO lol] "
+#define LOGGER_INFO_PREFIX     "\n[INFO] "
 #define LOGGER_WARN_PREFIX     "\n[WARN] "
 #define LOGGER_ERROR_PREFIX    "\n[ERROR] "
 #define LOGGER_FATAL_PREFIX    "\n[FATAL] "
 #define LOGGER_DEBUG_PREFIX    "\n[DEBUG] "
-
-#define LOG_MSG_BUF_SIZE 1024
 
 std::ostream* Logger::log_output_stream_ = &std::cout; // default
 
@@ -30,37 +28,6 @@ void Logger::usePrefix(const LogType& type) {
     }
     resetOutputColor();
 }
-
-template<class... Args>
-void Logger::printLog(const LogType type, const char* format, Args... args) {
-    usePrefix(type);
-
-    char buf[LOG_MSG_BUF_SIZE];
-    std::snprintf(buf, LOG_MSG_BUF_SIZE, format, args...);
-
-    *log_output_stream_ << buf << std::endl;
-    log_output_stream_->flush();
-}
-
-template<class... Args>
-void Logger::info(const char* format, Args... args) {
-    printLog(LOG_INFO, format, args);
-};
-
-template<class... Args>
-void Logger::warning(const char* format, Args...) {
-    printLog(LOG_WARN, format, args);
-};
-
-template<class... Args>
-void Logger::error(const char* format, Args...) {
-    printLog(LOG_ERROR, format, args);
-};
-
-template<class... Args>
-void Logger::debug(const char* format, Args...) {
-    printLog(LOG_DEBUG, format, args);
-};
 
 void Logger::setOutputColor(const LogType& type) {
     #ifndef _WIN32 

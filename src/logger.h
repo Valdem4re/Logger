@@ -5,6 +5,8 @@
 #include <cstdarg>
 #include <iostream>
 
+#define LOG_MSG_BUF_SIZE 1024
+
 class Logger {
     public:
     enum LogOutput {CONSOLE, FILE, STREAM}; 
@@ -38,5 +40,37 @@ class Logger {
 
 
 };
+
+
+template<class... Args>
+void Logger::info(const char* format, Args... args) {
+    printLog(LOG_INFO, format, args...);
+};
+
+template<class... Args>
+void Logger::warning(const char* format, Args... args) {
+    printLog(LOG_WARN, format, args...);
+};
+
+template<class... Args>
+void Logger::error(const char* format, Args... args) {
+    printLog(LOG_ERROR, format, args...);
+};
+
+template<class... Args>
+void Logger::debug(const char* format, Args... args) {
+    printLog(LOG_DEBUG, format, args...);
+};
+
+template<class... Args>
+void Logger::printLog(const LogType type, const char* format, Args... args) {
+    usePrefix(type);
+
+    char buf[LOG_MSG_BUF_SIZE];
+    std::snprintf(buf, LOG_MSG_BUF_SIZE, format, args...);
+
+    *log_output_stream_ << buf << std::endl;
+    log_output_stream_->flush();
+}
 
 #endif // LOGGER_H
