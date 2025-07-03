@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <cstdarg>
 #include <iostream>
+#include <fmt/core.h>
 
 #define LOG_MSG_BUF_SIZE 1024
 
@@ -12,16 +13,16 @@ class Logger {
     enum LogOutput {CONSOLE, FILE, STREAM}; 
 
     template<class... Args>
-    static void info(const char* format, Args... args);
+    static void info(fmt::format_string<Args...> fmt, Args&&... args);
 
     template<class... Args>
-    static void warning(const char* format, Args... args);
+    static void warning(fmt::format_string<Args...> fmt, Args&&... args);
 
     template<class... Args>
-    static void error(const char* format, Args... args);
+    static void error(fmt::format_string<Args...> fmt, Args&&... args);
 
     template<class... Args>
-    static void debug(const char* format, Args... args);
+    static void debug(fmt::format_string<Args...> fmt, Args&&... args);
 
     static void setLoggingOutput(std::ostream& output);
 
@@ -34,7 +35,7 @@ class Logger {
     static void usePrefix(const LogType& type);
 
     template<class... Args>
-    static void printLog(const LogType type, const char* format, Args... args);
+    static void printLog(const LogType type, fmt::format_string<Args...> fmt, Args&&... args);
 
     static std::ostream* log_output_stream_;
 
@@ -43,34 +44,29 @@ class Logger {
 
 
 template<class... Args>
-void Logger::info(const char* format, Args... args) {
-    printLog(LOG_INFO, format, args...);
+void Logger::info(fmt::format_string<Args...> fmt_str, Args&&... args) {
+    printLog(LOG_INFO, fmt_str, args...);
 };
 
 template<class... Args>
-void Logger::warning(const char* format, Args... args) {
-    printLog(LOG_WARN, format, args...);
+void Logger::warning(fmt::format_string<Args...> fmt_str, Args&&... args) {
+    printLog(LOG_WARN, fmt_str, args...);
 };
 
 template<class... Args>
-void Logger::error(const char* format, Args... args) {
-    printLog(LOG_ERROR, format, args...);
+void Logger::error(fmt::format_string<Args...> fmt_str, Args&&... args) {
+    printLog(LOG_ERROR, fmt_str, args...);
 };
 
 template<class... Args>
-void Logger::debug(const char* format, Args... args) {
-    printLog(LOG_DEBUG, format, args...);
+void Logger::debug(fmt::format_string<Args...> fmt_str, Args&&... args) {
+    printLog(LOG_DEBUG, fmt_str, args...);
 };
 
 template<class... Args>
-void Logger::printLog(const LogType type, const char* format, Args... args) {
+void Logger::printLog(const LogType type, fmt::format_string<Args...> fmt_str, Args&&... args) {
     usePrefix(type);
-
-    char buf[LOG_MSG_BUF_SIZE];
-    std::snprintf(buf, LOG_MSG_BUF_SIZE, format, args...);
-
-    *log_output_stream_ << buf << std::endl;
-    log_output_stream_->flush();
+    *log_output_stream_ << fmt::format(fmt_str, std::forward<Args>(args)...) << std::endl;
 }
 
 #endif // LOGGER_H
